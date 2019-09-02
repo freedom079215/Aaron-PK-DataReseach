@@ -1,14 +1,14 @@
 # Site
-title:              Moon
-bio:                'Minimal, one column jekyll theme.'
-description:        "Moon is a minimal, one column jekyll theme for your blog."
+title:              Aaron PK : DataResearch
+bio:                'Data Scientist/Big Data Planner'
+description:        "Aaron works at Financial industry for Fintech innovation with AI/Big Data."
 reading_time:       true
 words_per_minute:   200
 logo:               'assets/img/logo.png'
 background:         'assets/img/placeholder-big.jpg'
 tiled_bg:           false   # Set this true if you want to tile your background image, otherwise it will be covered
 locale:             en_US
-url:                https://github.com/freedom079215/Aaron-PK-DataReseach
+url:                https://taylantatli.github.io/Moon
 
 # Jekyll
 permalink:          /:title/
