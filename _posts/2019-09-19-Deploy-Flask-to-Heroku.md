@@ -2,10 +2,11 @@
 layout: post
 title: Syntaddddx Highlighting Post
 date: 2013-08-16
-excerpt: "Demo post displaying the various ways of highlighting code in Markdown."
-tags: [sample post, code, highlighting]
+excerpt: "flask with crawler to heroku"
+tags: [chatbot, heroku, flask]
 comments: true
 ---
+
 
 Deploy Flask to cloud(heroku)
 
