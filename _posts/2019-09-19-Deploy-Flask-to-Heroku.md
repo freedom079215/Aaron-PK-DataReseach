@@ -1,12 +1,11 @@
 ---
 layout: post
-title: Syntaddddx Highlighting Post
-date: 2013-08-16
+title: Deploy Flask to Heroku
+date: 2019-09-19
 excerpt: "flask with crawler to heroku"
 tags: [chatbot, heroku, flask]
 comments: true
 ---
-
 
 Deploy Flask to cloud(heroku)
 
