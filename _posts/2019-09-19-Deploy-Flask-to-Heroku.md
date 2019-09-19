@@ -1,9 +1,9 @@
- ---
+---
 layout: post
-title: Deploy Flask to Heroku
-date: 2019-09-19
-excerpt: "flask with crawler to heroku"
-tags: [chatbot, heroku, flask]
+title: Syntax Highlighting Post
+date: 2013-08-16
+excerpt: "Demo post displaying the various ways of highlighting code in Markdown."
+tags: [sample post, code, highlighting]
 comments: true
 ---
 
