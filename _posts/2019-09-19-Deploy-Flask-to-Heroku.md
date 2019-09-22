@@ -1,17 +1,10 @@
 ---
-layout: post
-title: Deploy Flask to Heroku
-date: 2019-09-19
-excerpt: "flask with crawler to heroku"
-tags: [chatbot, heroku, flask]
-comments: true
+tags: cloud, flask
 ---
-
-Deploy Flask to cloud(heroku)
+# Deploy Flask to cloud(heroku)
 
 - echo "python-3.5.3">runtime.txt
 - 定義要安裝的封包清單
-
 ```python=
 pip freeze > requirements.txt
 ```
@@ -169,7 +162,34 @@ if __name__=='__main__':
     app.run()  # 啟動flask
 
 ```
+> Flask-apscheduler doest not work to awake in Heroku
 
+
+## Awake Heroku
+- Add new dynos in **Procfile**
+```python
+clock: python clock.py
+
+```
+- Create clock.py
+```python=
+from apscheduler.schedulers.blocking import BlockingScheduler
+import requests
+
+sched = BlockingScheduler()
+
+@sched.scheduled_job('interval', minutes=29)
+def timed_job_awake_your_app():
+    print('awake app every 29 minutes.')
+    url = 'https://xxxx.herokuapp.com/'
+    r = requests.get(url)
+    print("--> r.content")
+    print(r.content)
+
+sched.start()
+
+```
+- git push and enable in the herouku dashboard
 
 ### Debug
 
