@@ -9,7 +9,6 @@ comments: true
 # Sentiment Analysis
 
 > Ref: http://puremonkey2010.blogspot.com/2017/09/toolkit-keras-imdb.html
-> 
 
 
 ### 1. Download IMDB Datasets
