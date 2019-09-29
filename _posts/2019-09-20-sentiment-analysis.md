@@ -8,6 +8,8 @@ comments: true
 ---
 # Sentiment Analysis
 
+- 情緒分析範例
+
 > Ref: http://puremonkey2010.blogspot.com/2017/09/toolkit-keras-imdb.html
 
 
