@@ -6,6 +6,8 @@ excerpt: ""
 tags: python, IDE
 comments: true
 ---
+
+
 # Deploy Jupyter on Heroku with Docker
 
 > 參考:https://www.codingforentrepreneurs.com/blog/jupyter-production-server-on-docker-heroku/
