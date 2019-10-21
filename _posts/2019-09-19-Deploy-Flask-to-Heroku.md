@@ -1,198 +1,76 @@
 ---
-tags: cloud, flask
+layout: post
+title: Deploy Jupyter on Heroku
+date: 2019-09-23
+excerpt: ""
+tags: python, IDE
+comments: true
 ---
-# Deploy Flask to cloud(heroku)
-
-- echo "python-3.5.3">runtime.txt
-- 定義要安裝的封包清單
-```python=
-pip freeze > requirements.txt
-```
-
-- 查看佔用中的port process
-
-```
-lsof -i:[port]
-kill 指定process
-```
-
-- 設定本機端的測試server
 
 
+# Deploy Jupyter on Heroku with Docker
 
-### 使用Pipenv
-
-- 啟動環境
-```python=
-pipenv shell
-
-#安裝 requirement
-pip install -r requirements.txt
-
-#安裝套件
-pipenv install [package]
-
-#離開環境
-ctrl + d
-
-#啟動環境
-pipenv shell
-
-```
-
-### 於heruku 指定要執行的py
-```python=
-heroku run python manage.py deploy
-
-```
-
-- gunicorn
-
-
----
-## Deploy Flask to Heruku
-> run.py
-> requirements.txt
-> Procfile
+> 參考:https://www.codingforentrepreneurs.com/blog/jupyter-production-server-on-docker-heroku/
 > 
+
+### 1. install pipenv
 ```python=
-#建立APP
-heroku create [app-name]
+pipenv install jupyter tornado
+pipenv run jupyter notebook
 ```
-If you haven't already, log in to your Heroku account and follow the prompts to create a new SSH public key.
 
-$ heroku login
-Create a new Git repository
-Initialize a git repository in a new or existing directory
+### 2. Add Production-read configuration for Jupyter / Docker deployment
+Jupyter allows for all kinds of configuration. We're going to be doing minimal configuration so our notebook server is at least password protected.
 ```python=
-
-$ cd my-project/
-$ git init
-$ heroku git:remote -a chattest-aaron
+mkdir conf
+touch conf/notebook_config.py
 ```
-Deploy your application
-Commit your code to the repository and deploy it to Heroku using Git.
+In notebook_config.py, all you need to add:
+```python=
+import os
+
+c = get_config()
+
+# Kernel config
+c.IPKernelApp.pylab = 'inline'  # if you want plotting support always in your notebook
+
+# Notebook config
+
+c.NotebookApp.allow_origin = '*' # put your public IP Address here
+c.NotebookApp.ip = '*'
+c.NotebookApp.allow_remote_access = True
+c.NotebookApp.open_browser = False
+
+# ipython -c "from notebook.auth import passwd; passwd()"
+c.NotebookApp.password = u'sha1:67478c7bc2ab:d451b0be82a5ee051a6f13d84d301e961bfe1aec'
+c.NotebookApp.port = int(os.environ.get("PORT", 8888))
+c.NotebookApp.allow_root = True
+c.NotebookApp.allow_password_change = True
+```
+> To create your own password, run ipython -c "from notebook.auth import passwd; passwd()", and set that result in the c.NotebookApp.password parameter above.
+> 
+> Above is a modified config file. To create the default jupyter notebook config file, run jupyter notebook --generate-config
+> 
+
+## 3. Create a Heroku App
+
+
+
+## 4. Login to the Heroku Container Registry
 
 ```python=
-$ git add .
-$ git commit -am "make it better"
-$ git push heroku master
+heroku container:login
 ```
-## Deploy Mongodb to Heroku
 
-> http://blog.kenyang.net/2014/01/22/heroku-getting-started-with-mongodb-and
-> https://blog.johlmike.com/2016/08/05/heroku-cha-jian-mlab-mongodb-zi-liao-ku/
-
+## 5. Push & Release
+* push
 ```python=
-#建立
-heroku addons:add mongolab
-
+heroku container:push web
 ```
-
-- pymongo.errors.OperationFailure: Authentication failed
+* release
+> Release If all went well with the push, you can release it:
 ```python=
-    conn = pymongo.MongoClient('mongodb://aaron:yiyouyop10@ds147723.mlab.com:47723/heroku_rdnsvl95?retryWrites=false')
-    #uri = "mongodb://aaron:yiyouyop10@ds147723.mlab.com:47723/heroku_rdnsvl95?authMechanism=SCRAM-SHA-1&retryWrites=false"
-    #client = MongoClient(uri)
-    # Get the database
-    db = conn.heroku_rdnsvl95
-    #db.authenticate('aaron','yiyouyop10')
-    collection = db.test
-    rlts = collection.find()
-    collection.insert_one({ "name": "John", "address": "Highway 37" })  
-    for row in rlts:
-        test = row
-    return row['name']
+heroku container:release web
 ```
 
-- Insert data
-```python=
-collection.insert_one({ "name": "John", "address": "Highway 37" })  
-    
-for x in contents:
-  if x['date2']> latest['date2']:
-     print(x['date2'].strftime('%b %d %H:%M:%S %Y'))
-     print(latest['date2'].strftime('%b %d %H:%M:%S %Y'))
-            result = collection.insert([x]) 
-     print('新增：'+ x['title'])
-  else :
-     print('no：'+ x['title'])
-```
-
-- cron job : Flask_APScheduler
-```python=
-from flask_apscheduler import APScheduler
-from flask import Flask
-
-
-class Config(object):
-    JOBS=[
-        {
-            'id':'job1',
-            'func':'__main__:job_1', ##放到heroku時，須將__main__ 改為檔案名稱
-            'args':(1,2),
-            'trigger':'cron',
-            'hour':17,
-            'minute':8
-        },
-        {
-            'id':'job2',
-            'func':'__main__:job_1',
-            'args':(3,4),
-            'trigger':'interval',
-            'seconds':5
-        }
-    ]
-def job_1(a,b):   # 一個函式，用來做定時任務的任務。
-    print(str(a)+' '+str(b))
-
-app=Flask(__name__) # 例項化flask
-
-app.config.from_object(Config())# 為例項化的flask引入配置
-
-@app.route('/')  # 首頁路由
-def hello_world():
-    return 'hello'
-
-
-if __name__=='__main__':
-    scheduler=APScheduler()  # 例項化APScheduler，放到heroku要時需要放到__main__外面
-    scheduler.init_app(app)  # 把任務列表放進flask，放到heroku要時需要放到__main__外面
-    scheduler.start() # 啟動任務列表，放到heroku要時需要放到__main__外面
-    app.run()  # 啟動flask
-
-```
-> Flask-apscheduler doest not work to awake in Heroku
-
-
-## Awake Heroku
-- Add new dynos in **Procfile**
-```python
-clock: python clock.py
-
-```
-- Create clock.py
-```python=
-from apscheduler.schedulers.blocking import BlockingScheduler
-import requests
-
-sched = BlockingScheduler()
-
-@sched.scheduled_job('interval', minutes=29)
-def timed_job_awake_your_app():
-    print('awake app every 29 minutes.')
-    url = 'https://xxxx.herokuapp.com/'
-    r = requests.get(url)
-    print("--> r.content")
-    print(r.content)
-
-sched.start()
-
-```
-- git push and enable in the herouku dashboard
-
-### Debug
-
-- 無法安裝bs4
-
-> 最後將python 指定為3.7.0 後解決
+>  Heroku filesystem of the dyno is ephemeral......
