@@ -1,13 +1,13 @@
 ---
 layout: post
-title: Deploy Jupyter on GCP
+title: Deploy Jupyter on Google Compute Engine
 date: 2019-09-26
 excerpt: ""
 tags: python, IDE
 comments: true
 ---
-# Deploy Jupyter on GCP
-
+# Deploy Jupyter on Google Compute Engine
+## 設定流程
 1. Create a new APP engine
 2. Set static IP
 3. Install required package through SSH shell
@@ -17,6 +17,9 @@ sha256sum Anaconda3-5.0.1-Linux-x86_64.sh
 bash Anaconda3-5.0.1-Linux-x86_64.sh
 source ~/.bashrc
 conda list
+
+# bunzip2: command not found
+# install -y bzip2
 ```
 * 手動加入path
 ```python=
@@ -36,22 +39,24 @@ ls ~/.jupyter/jupyter_notebook_config.py
 ```
 
 6. Set up the firewall rules
-- Allow ports
-- 
+    - Allow ports
+
 
 7. Keep permanent running
 > 承載 Cloud Shell 工作階段的虛擬機器執行個體並非永久分配給 Cloud Shell 工作階段，而是會在工作階段閒置一小時後就終止。執行個體終止後，您在 $HOME 以外做出的修改一律無效。
-> 
 
+- Terminal Command
+```   
 gcloud init
 gcloud compute ssh [instance-name]
+```
+- 如何用root遠端
+    - different user name
+    - sudo bash (change to root)
+    - su [username]
 
-different user name
-sudo bash (change to root)
-su [username]
+- 使用nohup讓jupyter持續維持開啟狀態
 
-
-* use "nohup"
 - check jobs
 jobs -l
 
@@ -59,12 +64,12 @@ gcloud auth login [account]
 gcloud config set project [projectid]
 
 
----
-* check disk
+## 虛擬機器調整
+* 檢查Compute Engine disk
 ```
-- lsblk
+lsblk
 
-- sudo mkfs.ext4 -m 0 -F -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/sdb
+sudo mkfs.ext4 -m 0 -F -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/sdb
 
 sudo mkdir -p /mnt/disks/[MNT_DIR]
 
@@ -74,15 +79,17 @@ sudo chmod a+w /mnt/disks/
 ```
 - 既有硬碟調整
 
+```
 sudo df -h
+```
 
 1. resize on UI
 2. Command
 ```
 sudo growpart /dev/[DEVICE_ID] [PARTITION_NUMBER]
-
 sudo resize2fs /dev/sda1
 ```
+
 
 * set jupyter password
 ```python=
