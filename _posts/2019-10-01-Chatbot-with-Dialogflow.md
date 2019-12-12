@@ -9,16 +9,28 @@ comments: true
 # Chatbot with Dialogflow
 
 1. Architecture
+* Dialogflow Conceptual Architecture
 ![](https://i.imgur.com/TYnE40J.png)
 
+[參考來源:如何使用Dialogflow建立Chatbot #4 使用fulfilment串API](https://ithelp.ithome.com.tw/articles/10203339)
+
+* Intent-base Architecture
 ![](https://i.imgur.com/NRKGH7e.png)
 
+[參考來源:[Actions on Google 課程筆記] 透過 Dialogflow + Firebase + Line 輕鬆打造自己的智慧助理](https://jerrynest.io/actions-on-google/)
+
+* Process
 ![](https://i.imgur.com/Uyr0POQ.png)
 
 
 ## Webhook
 
-> Webhook是「用戶定義的HTTP回呼」。[2]Webhook通常被某些事件啟用，比如將程式碼推播到版本庫[3]或評論部落格。[4]當此事件發生時，原網站將向為Webhook組態的URL傳送HTTP請求。用戶可組態它們引發網頁上的事件以呼叫另一個網站的行為。此操作可為任何事件。Webhook常用於啟用持續整合系統的構建操作[5]或用於提醒缺陷跟蹤管理系統。[6]由於Webhook使用HTTP，它們可以被無縫整合入網頁服務而無需添加新的基礎設施。[7]但是，除使用HTTP外也有方法構建一個訊息佇列服務，如包括IronMQ和RestMS在內的一些RESTful軟體。
+> * Webhook是「用戶定義的HTTP回呼」。
+> * Webhook通常被某些事件啟用，比如將程式碼推播到版本庫或評論部落格。
+> 當此事件發生時，原網站將向為Webhook組態的URL傳送HTTP請求。用戶可組態它們引發網頁上的事件以呼叫另一個網站的行為。此操作可為任何事件。
+> * Webhook常用於啟用持續整合系統的構建操作或用於提醒缺陷跟蹤管理系統。由於Webhook使用HTTP，它們可以被無縫整合入網頁服務而無需添加新的基礎設施。但是，除使用HTTP外也有方法構建一個訊息佇列服務，如包括IronMQ和RestMS在內的一些RESTful軟體。
+
+[參考來源:Wiki](https://zh.wikipedia.org/wiki/%E7%BD%91%E7%BB%9C%E9%92%A9%E5%AD%90)
 
 ## 運用Flask 建立 Webhook
 
@@ -29,11 +41,14 @@ comments: true
 
 > https://www.pragnakalp.com/dialogflow-fulfillment-webhook-tutorial/
 
-## 測試 chatbot
+## 於本機端測試 Flask Server
 
+1. 啟動Flask之py
+2. 啟動ngrok
 ```python=
 ngrok http 5000
 ```
+3. 即可使用ngrok所產生的IP進行測試
 
 ## Dialogflow Fulfillment
 
@@ -60,7 +75,7 @@ ngrok http 5000
     }
 ```
 
-- use "payload" as the format for specifi platform
+- use "payload" as the format for specific platform
 
 > https://developers.line.biz/en/reference/messaging-api/#buttons
 > 
@@ -101,11 +116,13 @@ ngrok http 5000
 ```
 
 ## 對話流程設計
-> https://ithelp.ithome.com.tw/articles/10203028
-> 
+
+1. 將對話中的變數儲存，並且設定存活生命週期
 
 * 先在Context的output設定好要變數名稱，左邊數字為存活時間長度
 * 在希望做後續回應的Intent, 設定Input Context並且將要設定的變數Parameter, set as a Default Value:
 ```
 #[context_var].parameter
 ```
+
+[參考來源:如何使用Dialogflow建立Chatbot #3 對話流程設計](https://ithelp.ithome.com.tw/articles/10203028)
